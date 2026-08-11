@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Grading Compliance Review — Rehabilitation of Taxilanes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F7F9; --grid:#DEE3E9; --ink:#1C2733; --ink-soft:#5B6B7A;
+    --line:#A9B4BF; --panel:#FFFFFF; --inlet:#2B6CB0; --inlet-soft:#E4ECF5;
+    --existing:#98A2AD; --proposed:#1E7A4C; --proposed-soft:#E4F1EA;
+    --flag:#B23A2E; --flag-soft:#F7E7E5; --transition:#B8801E; --transition-soft:#FBF0DA;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;
+    background-image:linear-gradient(var(--grid) 1px, transparent 1px),linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:26px 26px;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .sheet{max-width:1180px;margin:0 auto;padding:30px 26px 40px;}
+
+  .titleblock{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:4px;}
+  .tb-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.09em;color:var(--ink-soft);text-transform:uppercase;}
+  .tb-tag b{color:var(--ink);font-weight:600;}
+  h1{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:23px;margin:2px 0 0;letter-spacing:.01em;text-transform:uppercase;}
+  .tb-right{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);line-height:1.7;text-transform:uppercase;letter-spacing:.05em;}
+  .subline{font-size:13px;color:var(--ink-soft);margin:6px 0 22px;}
+
+  .layout{display:grid;grid-template-columns:1fr 250px;gap:20px;align-items:start;}
+  @media(max-width:900px){.layout{grid-template-columns:1fr;}}
+
+  .charts .panel{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:16px 18px 10px;margin-bottom:16px;}
+  .panel-title{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.03em;}
+  .panel-sub{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);margin:2px 0 8px;}
+
+  .flag{cursor:default;}
+  .flag circle{fill:var(--flag-soft);stroke:var(--flag);stroke-width:1.6;}
+  .flag text{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12px;fill:var(--flag);}
+  .flag .fl-note{opacity:0;transition:opacity .15s;}
+  .flag:hover .fl-note{opacity:1;}
+  .fl-note rect{fill:var(--ink);}
+  .fl-note text{fill:#fff;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;}
+
+  .sidebar{display:flex;flex-direction:column;gap:14px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:14px 16px;}
+  .card h3{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin:0 0 10px;}
+  .legend-row{display:flex;align-items:center;gap:10px;font-size:12.5px;margin-bottom:8px;}
+  .legend-row:last-child{margin-bottom:0;}
+  .swatch-line{width:26px;height:0;border-top-width:3px;border-top-style:solid;flex-shrink:0;}
+
+  .notes ol{margin:0;padding-left:18px;font-size:12.5px;line-height:1.55;}
+  .notes li{margin-bottom:10px;}
+  .notes li:last-child{margin-bottom:0;}
+  .notes b{font-family:'IBM Plex Mono',monospace;color:var(--flag);}
+  .notes .clause{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);margin-top:2px;}
+
+  .ref{background:var(--ink);color:var(--paper);border-radius:3px;padding:12px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.6;}
+  .ref b{color:#fff;}
+
+  footer{border-top:1px solid var(--line);margin-top:20px;padding-top:10px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+
+  /* combined-document additions */
+  .doc-head{margin-bottom:26px;}
+  .toc{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:14px 18px;margin-bottom:26px;}
+  .toc h3{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin:0 0 10px;}
+  .toc-grid{display:flex;flex-wrap:wrap;gap:8px;}
+  .toc a{font-family:'IBM Plex Mono',monospace;font-size:12px;text-decoration:none;color:var(--ink);
+    border:1px solid var(--line);border-radius:3px;padding:6px 12px;transition:background .12s;}
+  .toc a:hover{background:var(--inlet-soft);border-color:var(--inlet);}
+  .sheet-sec{margin-bottom:44px;scroll-margin-top:16px;}
+  .sheet-hdr{display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:16px;}
+  .sheet-hdr h2{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:18px;margin:0;text-transform:uppercase;}
+  .sheet-hdr .sh-sub{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);}
+  @media print{ .toc{display:none;} .sheet-sec{page-break-after:always;} }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="titleblock doc-head">
+    <div>
+      <div class="tb-tag">Compliance review redline · <b>Sheets CG401–CG405</b></div>
+      <h1>Taxilane grading compliance review</h1>
+    </div>
+    <div class="tb-right">Old Bridge Airport<br>Rehabilitation of Taxilanes</div>
+  </div>
+  <div class="subline">Apron-1 and Taxilane-1 through Taxilane-9 — existing (as-drawn) vs. proposed (revised, this review), checked against FAA AC 150/5300-13B §5.9</div>
+
+  <div class="toc">
+    <h3>Sheets</h3>
+    <div class="toc-grid">
+      <a href="#CG401">CG401 — Apron-1 · Taxilane-1 · Taxilane-2</a>
+      <a href="#CG402">CG402 — Taxilane-3 · Taxilane-4</a>
+      <a href="#CG403">CG403 — Taxilane-5 · Taxilane-6</a>
+      <a href="#CG404">CG404 — Taxilane-7 · Taxilane-8</a>
+      <a href="#CG405">CG405 — Taxilane-9</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:26px;">
+    <h3>Legend</h3>
+    <div class="legend-row"><span class="swatch-line" style="border-top-color:var(--existing);border-top-style:dashed;"></span>Existing grade <span class="mono" style="color:var(--ink-soft);font-size:11px;">(gray % = as-drawn)</span></div>
+    <div class="legend-row"><span class="swatch-line" style="border-top-color:var(--proposed);"></span>Proposed grade <span class="mono" style="color:var(--proposed);font-size:11px;">(green % = this review)</span></div>
+    <div class="legend-row"><svg width="20" height="20"><rect x="3" y="3" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/><line x1="3" y1="3" x2="17" y2="17" stroke="var(--inlet)" stroke-width="1.3"/><line x1="3" y1="10" x2="17" y2="10" stroke="var(--inlet)" stroke-width="1.3"/><line x1="10" y1="3" x2="10" y2="17" stroke="var(--inlet)" stroke-width="1.3"/></svg>Inlet / catch basin (grate)</div>
+    <div class="legend-row"><svg width="20" height="20"><circle cx="10" cy="10" r="9" fill="var(--flag-soft)" stroke="var(--flag)" stroke-width="1.6"/></svg>Flagged violation (hover for clause)</div>
+  </div>
+
+  <div class="sheet-sec" id="CG401">
+    <div class="sheet-hdr">
+      <h2>CG401</h2>
+      <span class="sh-sub">Apron-1 · Taxilane-1 · Taxilane-2</span>
+    </div>
+    <div class="layout">
+      <div class="charts">
+
+      <!-- APRON-1 -->
+      <div class="panel">
+        <div class="panel-title">Apron-1 profile</div>
+        <div class="panel-sub">STA -0+25 TO STA 2+25 · V:1"=2' H:1"=20'</div>
+        <svg width="100%" viewBox="0 0 820 260" role="img">
+          <title>Apron-1 profile, existing vs proposed grade</title>
+          <line x1="60" y1="40" x2="60" y2="240" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="240" x2="780" y2="240" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="44" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">61</text>
+          <text x="34" y="80" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">60</text>
+          <text x="34" y="120" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">59</text>
+          <text x="34" y="160" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">58</text>
+          <text x="34" y="200" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">57</text>
+          <text x="34" y="240" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">56</text>
+          <line x1="60" y1="80" x2="780" y2="80" stroke="var(--grid)" stroke-width="1"/>
+          <line x1="60" y1="120" x2="780" y2="120" stroke="var(--grid)" stroke-width="1"/>
+          <line x1="60" y1="160" x2="780" y2="160" stroke="var(--grid)" stroke-width="1"/>
+          <line x1="60" y1="200" x2="780" y2="200" stroke="var(--grid)" stroke-width="1"/>
+
+          <!-- existing (dashed) -->
+          <polyline points="60,122.4 145.7,140.8 231.4,156.8 317.2,160.8 402.9,164.4 488.6,167.6 574.4,172.4 660.1,181.2"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="102.9" y="123.6" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.89%</text>
+          <text x="188.6" y="140.8" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.75%</text>
+          <text x="274.3" y="150.8" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.90%</text>
+          <text x="360.0" y="154.6" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.33%</text>
+          <text x="445.8" y="158.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.57%</text>
+          <text x="531.5" y="162.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.82%</text>
+          <text x="617.2" y="168.8" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.64%</text>
+          <!-- proposed (solid green) -->
+          <polyline points="60,122.4 660.1,181.2" fill="none" stroke="var(--proposed)" stroke-width="3.5"/>
+          <circle cx="60" cy="122.4" r="4" fill="var(--proposed)"/>
+          <circle cx="660.1" cy="181.2" r="4" fill="var(--proposed)"/>
+          <text x="90" y="110" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">-0.84%</text>
+
+          <g class="flag" transform="translate(358.3,152.0)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">1</text>
+            <g class="fl-note" transform="translate(-95,-46)"><rect width="190" height="34" rx="4"/>
+              <text x="10" y="14">-0.33% existing &lt; 0.5% min</text><text x="10" y="27">AC §5.9.1.1</text></g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- TAXILANE-1 -->
+      <div class="panel">
+        <div class="panel-title">Taxilane-1 profile</div>
+        <div class="panel-sub">STA -0+25 TO STA 2+75 · V:1"=2' H:1"=20'</div>
+        <svg width="100%" viewBox="0 -15 820 315" role="img">
+          <title>Taxilane-1 profile, existing vs proposed grade</title>
+          <line x1="60" y1="-11" x2="60" y2="264" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="-7" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">62</text>
+          <line x1="60" y1="264" x2="780" y2="264" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="-11" x2="780" y2="-11" stroke="var(--grid)" stroke-width="1"/>
+          <text x="34" y="48" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">61</text>
+          <text x="34" y="99" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">60</text>
+          <text x="34" y="154" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">59</text>
+          <text x="34" y="209" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">58</text>
+          <text x="34" y="264" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">57</text>
+          <line x1="60" y1="99" x2="780" y2="99" stroke="var(--grid)"/>
+          <line x1="60" y1="154" x2="780" y2="154" stroke="var(--grid)"/>
+          <line x1="60" y1="209" x2="780" y2="209" stroke="var(--grid)"/>
+
+          <!-- existing (dashed), computed from actual tabulated EG values -->
+          <polyline points="60,77.5 125.5,100.7 190.9,131.5 256.4,158.4 321.8,175.5 387.3,189.2 452.7,202.4 518.2,216.2 545.9,221 583.6,216.7 649.1,205.7 714.5,192.5 780,187"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="92.7" y="81.3" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.69%</text>
+          <text x="182.0" y="128.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-2.33%</text>
+          <text x="223.6" y="137.1" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.79%</text>
+          <text x="289.1" y="159.1" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.27%</text>
+          <text x="354.5" y="174.5" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.98%</text>
+          <text x="420.0" y="188.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.88%</text>
+          <text x="485.4" y="201.5" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.34%</text>
+          <text x="712.0" y="160.0" class="mono" font-size="9.5" fill="var(--ink-soft)">0.78%</text>
+          <text x="600" y="230" class="mono" font-size="10" fill="var(--ink-soft)">existing grade</text>
+
+          <!-- proposed (solid green), 3-seg revision - computed from real station/elev data -->
+          <polyline points="60,77.5 321.8,159.5 547,221.1 780,187" fill="none" stroke="var(--proposed)" stroke-width="3.5" stroke-linejoin="round"/>
+          <circle cx="60" cy="77.5" r="4" fill="var(--proposed)"/>
+          <circle cx="321.8" cy="159.5" r="4" fill="var(--proposed)"/>
+          <g transform="translate(547,221.1)">
+            <rect x="-7" y="-7" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/>
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+          </g>
+          <polyline points="547,221.1 612.4,211.5" fill="none" stroke="var(--transition)" stroke-width="3" stroke-dasharray="4 3"/>
+          <text x="552" y="245" class="mono" font-size="9.5" font-weight="600" fill="var(--transition)">20-25ft transitional — AC §5.9.3</text>
+          <circle cx="780" cy="187" r="4" fill="var(--proposed)"/>
+          <text x="95" y="65" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">-1.49%</text>
+          <text x="380" y="168" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">-1.30%</text>
+          <text x="640" y="180" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">+0.70%</text>
+
+          <g class="flag" transform="translate(156.9,107.9)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">2</text>
+            <g class="fl-note" transform="translate(-10,-46)"><rect width="205" height="34" rx="4"/>
+              <text x="10" y="14">-2.33% existing &gt; 2.0% max</text><text x="10" y="27">AC §5.9.2.1</text></g>
+          </g>
+          <g class="flag" transform="translate(567,206.1)">
+            <circle r="12" fill="var(--inlet-soft)" stroke="var(--inlet)"/><text x="0" y="4" text-anchor="middle" fill="var(--inlet)">i</text>
+            <g class="fl-note" transform="translate(-190,-46)"><rect width="200" height="34" rx="4"/>
+              <text x="10" y="14">2.12% grade chg &gt; 2.0% max</text><text x="10" y="27">AC §5.9.1.3</text></g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- TAXILANE-2 -->
+      <div class="panel">
+        <div class="panel-title">Taxilane-2 profile</div>
+        <div class="panel-sub">STA -0+25 TO STA 2+75 · V:1"=2' H:1"=20'</div>
+        <svg width="100%" viewBox="0 0 820 300" role="img">
+          <title>Taxilane-2 profile, existing vs proposed grade</title>
+          <line x1="60" y1="40" x2="60" y2="260" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="260" x2="780" y2="260" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="44" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">62</text>
+          <text x="34" y="84" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">61</text>
+          <text x="34" y="128" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">60</text>
+          <text x="34" y="172" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">59</text>
+          <text x="34" y="216" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">58</text>
+          <text x="34" y="260" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">57</text>
+          <line x1="60" y1="84" x2="780" y2="84" stroke="var(--grid)"/>
+          <line x1="60" y1="128" x2="780" y2="128" stroke="var(--grid)"/>
+          <line x1="60" y1="172" x2="780" y2="172" stroke="var(--grid)"/>
+          <line x1="60" y1="216" x2="780" y2="216" stroke="var(--grid)"/>
+
+          <!-- existing (dashed), computed from actual tabulated EG values -->
+          <polyline points="60,62.4 125.5,84 190.9,133.3 256.4,165 321.8,181.2 387.3,188.3 452.7,201.5 518.2,213.4 571,226.7 583.6,225.2 649.1,220.8 714.5,199.3"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="96.4" y="66.4" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.86%</text>
+          <text x="169.1" y="108.9" class="mono" font-size="9.5" fill="var(--ink-soft)">-3.47%</text>
+          <text x="241.8" y="150.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-4.41%</text>
+          <text x="314.5" y="171.4" class="mono" font-size="9.5" fill="var(--ink-soft)">-2.51%</text>
+          <text x="387.3" y="180.3" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.89%</text>
+          <text x="460.0" y="194.8" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.18%</text>
+          <text x="532.7" y="209.1" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.54%</text>
+          <text x="605.4" y="215.7" class="mono" font-size="9.5" fill="var(--ink-soft)">0.42%</text>
+          <text x="678.2" y="203.2" class="mono" font-size="9.5" fill="var(--ink-soft)">1.73%</text>
+          <text x="600" y="212" class="mono" font-size="10" fill="var(--ink-soft)">existing grade</text>
+
+          <!-- proposed: incoming tangent to REAL inlet (unchanged), transitional section, outgoing tangent -->
+          <polyline points="60,62.4 571,226.7" fill="none" stroke="var(--proposed)" stroke-width="3.5"/>
+          <polyline points="571,226.7 636.4,212.4" fill="none" stroke="var(--transition)" stroke-width="3" stroke-dasharray="4 3"/>
+          <polyline points="636.4,212.4 714.5,199.3" fill="none" stroke="var(--proposed)" stroke-width="3.5"/>
+          <circle cx="60" cy="62.4" r="4" fill="var(--proposed)"/>
+          <g transform="translate(571,226.7)">
+            <rect x="-7" y="-7" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/>
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+          </g>
+          <circle cx="714.5" cy="199.3" r="4" fill="var(--proposed)"/>
+          <text x="90" y="50" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">-1.91%</text>
+          <text x="660" y="188" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">+1.0%</text>
+          <text x="500" y="255" class="mono" font-size="10.5" font-weight="600" fill="var(--transition)">20–25 ft transitional section</text>
+          <text x="530" y="267" class="mono" font-size="10.5" font-weight="600" fill="var(--transition)">— AC §5.9.3</text>
+
+          <g class="flag" transform="translate(222.3,114.6)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">4</text>
+            <g class="fl-note" transform="translate(-10,-46)"><rect width="205" height="34" rx="4"/>
+              <text x="10" y="14">-4.41% existing &gt; 2.0% max</text><text x="10" y="27">AC §5.9.2.1</text></g>
+          </g>
+          <g class="flag" transform="translate(591,214.7)">
+            <circle r="12" fill="var(--inlet-soft)" stroke="var(--inlet)"/><text x="0" y="4" text-anchor="middle" fill="var(--inlet)">i</text>
+            <g class="fl-note" transform="translate(-195,-58)"><rect width="215" height="34" rx="4"/>
+              <text x="10" y="14">Inlet ELV 57.757 — unchanged</text><text x="10" y="27">design intent, not a violation</text></g>
+          </g>
+        </svg>
+      </div>
+
+      </div>
+      <div class="sidebar">
+        <div class="card notes">
+        <h3>Revision notes</h3>
+        <ol>
+          <li><b>Apron-1:</b> flat segment fails minimum gradient.<span class="clause">AC §5.9.1.1 — min 0.5%</span></li>
+          <li><b>Taxilane-1:</b> segment exceeds max gradient.<span class="clause">AC §5.9.2.1 — max 2.0%</span></li>
+          <li><b>Taxilane-1:</b> grade change at inlet is 2.0% — within the hard limit, but &gt;1% so now shown with a 20–25 ft transitional section instead of a sharp PVI.<span class="clause">AC §5.9.1.3 / §5.9.3.2</span></li>
+          <li><b>Taxilane-2:</b> segment exceeds max gradient.<span class="clause">AC §5.9.2.1 — max 2.0%</span></li>
+          <li><b>Taxilane-2:</b> inlet elevation held fixed at existing 57.757 per direction — resolved via transitional section, not a rim adjustment.</li>
+        </ol>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-sec" id="CG402">
+    <div class="sheet-hdr">
+      <h2>CG402</h2>
+      <span class="sh-sub">Taxilane-3 · Taxilane-4</span>
+    </div>
+    <div class="layout">
+      <div class="charts">
+
+      <!-- TAXILANE-3 -->
+      <div class="panel">
+        <div class="panel-title">Taxilane-3 profile</div>
+        <div class="panel-sub">STA 0+00 TO STA 3+00 · V:1"=2' H:1"=20' · start cut 0.5 ft</div>
+        <svg width="100%" viewBox="0 0 820 320" role="img">
+          <title>Taxilane-3 profile, existing vs proposed grade</title>
+          <line x1="60" y1="40" x2="60" y2="287" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="287" x2="780" y2="287" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="44" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">65</text>
+          <text x="34" y="71" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">64</text>
+          <text x="34" y="99" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">63</text>
+          <text x="34" y="126" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">62</text>
+          <text x="34" y="154" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">61</text>
+          <text x="34" y="181" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">60</text>
+          <text x="34" y="209" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">59</text>
+          <text x="34" y="236" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">58</text>
+          <text x="34" y="260" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">57</text>
+          <text x="34" y="287" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">56</text>
+          <line x1="60" y1="71" x2="780" y2="71" stroke="var(--grid)"/>
+          <line x1="60" y1="99" x2="780" y2="99" stroke="var(--grid)"/>
+          <line x1="60" y1="126" x2="780" y2="126" stroke="var(--grid)"/>
+          <line x1="60" y1="154" x2="780" y2="154" stroke="var(--grid)"/>
+          <line x1="60" y1="181" x2="780" y2="181" stroke="var(--grid)"/>
+          <line x1="60" y1="209" x2="780" y2="209" stroke="var(--grid)"/>
+          <line x1="60" y1="236" x2="780" y2="236" stroke="var(--grid)"/>
+
+          <polyline points="60,112.6 120,125.5 180,152.8 240,181.6 300,205.3 360,210.2 420,215.5 480,222.3 540,230.8 600,225.6 660,220.7 720,217.7"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="96.7" y="112.5" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.82%</text>
+          <text x="170.0" y="140.2" class="mono" font-size="9.5" fill="var(--ink-soft)">-3.72%</text>
+          <text x="243.3" y="174.9" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.68%</text>
+          <text x="316.7" y="198.7" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.04%</text>
+          <text x="390.0" y="204.8" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.79%</text>
+          <text x="463.3" y="212.4" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.39%</text>
+          <text x="600.0" y="255.0" class="mono" font-size="9.5" fill="var(--ink-soft)">2.58%</text>
+          <text x="610.0" y="216.8" class="mono" font-size="9.5" fill="var(--ink-soft)">0.57%</text>
+          <text x="683.3" y="211.5" class="mono" font-size="9.5" fill="var(--ink-soft)">2.01%</text>
+
+          <polyline points="60,126.4 514.8,230.6 563.7,233.4 720,215.5" fill="none" stroke="var(--proposed)" stroke-width="3.5" stroke-linejoin="round"/>
+          <circle cx="60" cy="126.4" r="4" fill="var(--proposed)"/><circle cx="514.8" cy="230.6" r="4" fill="var(--proposed)"/>
+          <circle cx="720" cy="215.5" r="4" fill="var(--proposed)"/>
+          <g transform="translate(563.7,233.4)">
+            <rect x="-7" y="-7" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/>
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+          </g>
+          <text x="130" y="97" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">-2.0%</text>
+          <text x="480" y="250" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-0.5%</text>
+          <text x="605" y="192" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">+1.0%</text>
+          <text x="65" y="153" class="mono" font-size="10" font-weight="600" fill="var(--flag)">0.5 ft cut at</text>
+          <text x="65" y="165" class="mono" font-size="10" font-weight="600" fill="var(--flag)">taxiway tie-in</text>
+
+          <g class="flag" transform="translate(148.8,140.0)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">1</text>
+            <g class="fl-note" transform="translate(-10,-46)"><rect width="205" height="34" rx="4"/>
+              <text x="10" y="14">-3.72% existing &gt; 2.0% max</text><text x="10" y="27">AC §5.9.2.1</text></g>
+          </g>
+          <g class="flag" transform="translate(583.7,223.4)">
+            <circle r="12" fill="var(--inlet-soft)" stroke="var(--inlet)"/><text x="0" y="4" text-anchor="middle" fill="var(--inlet)">i</text>
+            <g class="fl-note" transform="translate(-195,-58)"><rect width="215" height="34" rx="4"/>
+              <text x="10" y="14">Inlet ELV 57.968 — UNCHANGED</text><text x="10" y="27">zero fill/cut here, ties existing</text></g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- TAXILANE-4 -->
+      <div class="panel">
+        <div class="panel-title">Taxilane-4 profile</div>
+        <div class="panel-sub">STA 0+00 TO STA 3+25 · V:1"=2' H:1"=20' · start cut 0.5 ft</div>
+        <svg width="100%" viewBox="0 0 820 300" role="img">
+          <title>Taxilane-4 profile, existing vs proposed grade</title>
+          <line x1="60" y1="40" x2="60" y2="260" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="260" x2="780" y2="260" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="44" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">65</text>
+          <text x="34" y="72" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">64</text>
+          <text x="34" y="103" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">63</text>
+          <text x="34" y="134" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">62</text>
+          <text x="34" y="166" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">61</text>
+          <text x="34" y="197" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">60</text>
+          <text x="34" y="228" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">59</text>
+          <text x="34" y="260" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">58</text>
+          <line x1="60" y1="72" x2="780" y2="72" stroke="var(--grid)"/>
+          <line x1="60" y1="103" x2="780" y2="103" stroke="var(--grid)"/>
+          <line x1="60" y1="134" x2="780" y2="134" stroke="var(--grid)"/>
+          <line x1="60" y1="166" x2="780" y2="166" stroke="var(--grid)"/>
+          <line x1="60" y1="197" x2="780" y2="197" stroke="var(--grid)"/>
+          <line x1="60" y1="228" x2="780" y2="228" stroke="var(--grid)"/>
+
+          <polyline points="60,98.5 115.4,116.7 170.8,151.6 226.2,180.2 281.5,206.9 336.9,217.3 392.3,220.7 447.7,222.9 503.1,226.1 558.5,235.2 613.8,229.8 669.2,226.7"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="98.1" y="103.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-2.31%</text>
+          <text x="174.3" y="145.4" class="mono" font-size="9.5" fill="var(--ink-soft)">-4.03%</text>
+          <text x="250.4" y="183.9" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.54%</text>
+          <text x="326.5" y="207.4" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.43%</text>
+          <text x="402.7" y="213.1" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.33%</text>
+          <text x="478.9" y="216.7" class="mono" font-size="9.5" fill="var(--ink-soft)">-2.54%</text>
+          <text x="600.0" y="240.0" class="mono" font-size="9.5" fill="var(--ink-soft)">0.67%</text>
+          <text x="631.1" y="220.8" class="mono" font-size="9.5" fill="var(--ink-soft)">1.47%</text>
+
+          <polyline points="60,114.2 457.8,227.0 566.3,234.7 669.2,220.1" fill="none" stroke="var(--proposed)" stroke-width="3.5" stroke-linejoin="round"/>
+          <circle cx="60" cy="114.2" r="4" fill="var(--proposed)"/><circle cx="457.8" cy="227.0" r="4" fill="var(--proposed)"/>
+          <circle cx="669.2" cy="220.1" r="4" fill="var(--proposed)"/>
+          <g transform="translate(566.3,234.7)">
+            <rect x="-7" y="-7" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/>
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+          </g>
+          <text x="130" y="85" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">-2.0%</text>
+          <text x="415" y="248" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-0.5%</text>
+          <text x="605" y="192" class="mono" font-size="12" font-weight="600" fill="var(--proposed)">+1.0%</text>
+          <text x="65" y="155" class="mono" font-size="10" font-weight="600" fill="var(--flag)">0.5 ft cut at</text>
+          <text x="65" y="167" class="mono" font-size="10" font-weight="600" fill="var(--flag)">taxiway tie-in</text>
+
+          <g class="flag" transform="translate(197.4,142.4)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">3</text>
+            <g class="fl-note" transform="translate(-10,-46)"><rect width="205" height="34" rx="4"/>
+              <text x="10" y="14">-4.03% existing &gt; 2.0% max</text><text x="10" y="27">AC §5.9.2.1</text></g>
+          </g>
+          <g class="flag" transform="translate(586.3,224.7)">
+            <circle r="12" fill="var(--inlet-soft)" stroke="var(--inlet)"/><text x="0" y="4" text-anchor="middle" fill="var(--inlet)">i</text>
+            <g class="fl-note" transform="translate(-195,-58)"><rect width="215" height="34" rx="4"/>
+              <text x="10" y="14">Inlet ELV 58.804 — UNCHANGED</text><text x="10" y="27">zero fill/cut here, ties existing</text></g>
+          </g>
+        </svg>
+      </div>
+
+      </div>
+      <div class="sidebar">
+        <div class="card"><h3>Before / after (fill check)</h3>
+        <div class="legend-row" style="justify-content:space-between;"><span>TL-3 peak fill</span><b class="mono" style="color:var(--flag)">1.37→0.87 ft</b></div>
+        <div class="legend-row" style="justify-content:space-between;"><span>TL-4 peak fill</span><b class="mono" style="color:var(--flag)">1.55→0.95 ft</b></div>
+        <div class="legend-row" style="justify-content:space-between;"><span>Inlets touched?</span><b class="mono" style="color:var(--proposed)">No — unchanged</b></div>
+      </div>
+<div class="card notes">
+        <h3>Revision notes</h3>
+        <ol>
+          <li><b>TL-3 &amp; TL-4:</b> root cause was existing terrain dropping faster (to -4.4%) than the 2.0% cap allows, so a compliant line unavoidably lags behind it for a stretch.</li>
+          <li><b>Fix:</b> cut 0.5 ft at STA 0+00 (both tie into the same Taxiway edge per CP102/CP103, so a matched cut avoids a step in that pavement edge), run the steepest legal -2.0%, ease to -0.5% right before each inlet so both land on their <b>original, unmodified</b> inlet elevation.</li>
+          <li>Residual fill (0.87 / 0.95 ft peak) is the mathematical minimum achievable within a reasonable tie-in cut — flag for a full-depth section there, not just overlay.</li>
+        </ol>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-sec" id="CG403">
+    <div class="sheet-hdr">
+      <h2>CG403</h2>
+      <span class="sh-sub">Taxilane-5 · Taxilane-6</span>
+    </div>
+    <div class="layout">
+      <div class="charts">
+
+      <!-- TAXILANE-5 -->
+      <div class="panel">
+        <div class="panel-title">Taxilane-5 profile</div>
+        <div class="panel-sub">STA 0+00 TO STA 3+50 · V:1"=2' H:1"=20'</div>
+        <svg width="100%" viewBox="0 0 820 320" role="img">
+          <title>Taxilane-5 profile, existing vs proposed grade</title>
+          <line x1="60" y1="40" x2="60" y2="304" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="304" x2="780" y2="304" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="44" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">65</text>
+          <text x="34" y="84" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">64</text>
+          <text x="34" y="128" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">63</text>
+          <text x="34" y="172" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">62</text>
+          <text x="34" y="216" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">61</text>
+          <text x="34" y="260" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">60</text>
+          <text x="34" y="304" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">59</text>
+          <line x1="60" y1="84" x2="780" y2="84" stroke="var(--grid)"/>
+          <line x1="60" y1="128" x2="780" y2="128" stroke="var(--grid)"/>
+          <line x1="60" y1="172" x2="780" y2="172" stroke="var(--grid)"/>
+          <line x1="60" y1="216" x2="780" y2="216" stroke="var(--grid)"/>
+          <line x1="60" y1="260" x2="780" y2="260" stroke="var(--grid)"/>
+
+          <polyline points="60,87.9 111.4,109.9 162.9,148.6 214.3,173.7 265.7,191.3 317.1,204.5 368.6,220.3 420,219.9 471.4,217.2 522.9,215.5 574.3,218.5 625.7,224.7 677.1,226.9 728.6,228.7"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="80.6" y="88.7" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.87%</text>
+          <text x="125.8" y="112.7" class="mono" font-size="9.5" fill="var(--ink-soft)">-3.53%</text>
+          <text x="177.3" y="147.6" class="mono" font-size="9.5" fill="var(--ink-soft)">-2.17%</text>
+          <text x="228.7" y="170.6" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.55%</text>
+          <text x="276.0" y="185.9" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.48%</text>
+          <text x="317.1" y="196.5" class="mono" font-size="9.5" fill="var(--ink-soft)">-2.36%</text>
+          <text x="352.1" y="207.2" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.07%</text>
+          <text x="420.0" y="211.9" class="mono" font-size="9.5" fill="var(--ink-soft)">1.75%</text>
+          <text x="574.3" y="210.5" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.01%</text>
+          <text x="620.0" y="205.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.53%</text>
+          <text x="672.0" y="212.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.28%</text>
+          <text x="722.0" y="245.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.62%</text>
+
+          <polyline points="60,87.9 287.6,185.2 705.4,229.9" fill="none" stroke="var(--proposed)" stroke-width="3.5" stroke-linejoin="round"/>
+          <circle cx="60" cy="87.9" r="4" fill="var(--proposed)"/><circle cx="287.6" cy="185.2" r="4" fill="var(--proposed)"/>
+          <g transform="translate(705.4,229.9)">
+            <rect x="-7" y="-7" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/>
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+          </g>
+          <text x="80" y="130" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-2.0%</text>
+          <text x="420" y="215" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-0.5%</text>
+          <text x="65" y="70" class="mono" font-size="10" font-weight="600" fill="var(--ink-soft)">ties existing exactly</text>
+
+          <g class="flag" transform="translate(125.8,104.7)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">1</text>
+            <g class="fl-note" transform="translate(-10,-46)"><rect width="205" height="34" rx="4"/>
+              <text x="10" y="14">-3.53% existing &gt; 2.0% max</text><text x="10" y="27">AC §5.9.2.1</text></g>
+          </g>
+          <g class="flag" transform="translate(725.4,219.9)">
+            <circle r="12" fill="var(--inlet-soft)" stroke="var(--inlet)"/><text x="0" y="4" text-anchor="middle" fill="var(--inlet)">i</text>
+            <g class="fl-note" transform="translate(-225,-58)"><rect width="240" height="34" rx="4"/>
+              <text x="10" y="14">Inlet ELV 60.682, STA 3+13.74 —</text><text x="10" y="27">CORRECTED (was misread as 2+15.74)</text></g>
+          </g>
+        </svg>
+        <div class="warn">Sheet title claims STA -0+25 to 3+50; last real EG/FG entry is STA 3+25 (blank beyond that). The inlet (3+13.74) falls within this verified range.</div>
+      </div>
+
+      <!-- TAXILANE-6 -->
+      <div class="panel">
+        <div class="panel-title">Taxilane-6 profile</div>
+        <div class="panel-sub">STA 0+00 TO STA 3+75 · V:1"=2' H:1"=20'</div>
+        <svg width="100%" viewBox="0 0 820 320" role="img">
+          <title>Taxilane-6 profile, existing vs proposed grade</title>
+          <line x1="60" y1="40" x2="60" y2="304" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="304" x2="780" y2="304" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="44" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">65</text>
+          <text x="34" y="84" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">64</text>
+          <text x="34" y="128" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">63</text>
+          <text x="34" y="172" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">62</text>
+          <text x="34" y="216" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">61</text>
+          <text x="34" y="260" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">60</text>
+          <text x="34" y="304" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">59</text>
+          <line x1="60" y1="84" x2="780" y2="84" stroke="var(--grid)"/>
+          <line x1="60" y1="128" x2="780" y2="128" stroke="var(--grid)"/>
+          <line x1="60" y1="172" x2="780" y2="172" stroke="var(--grid)"/>
+          <line x1="60" y1="216" x2="780" y2="216" stroke="var(--grid)"/>
+          <line x1="60" y1="260" x2="780" y2="260" stroke="var(--grid)"/>
+
+          <polyline points="60,74.7 108,98 156,116.5 204,135 252,144.2 300,160 348,174.6 396,182.5 444,180.3 492,176.8 540,177.6 588,181.2 636,182 684,177.6 732,179.4"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="79.2" y="75.9" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.86%</text>
+          <text x="127.2" y="97.3" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.92%</text>
+          <text x="175.2" y="115.8" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.51%</text>
+          <text x="444.0" y="172.2" class="mono" font-size="9.5" fill="var(--ink-soft)">0.26%</text>
+          <text x="540.0" y="169.5" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.28%</text>
+          <text x="611.0" y="164.5" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.06%</text>
+          <text x="642.0" y="197.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.92%</text>
+          <text x="674.4" y="152.4" class="mono" font-size="9.5" fill="var(--ink-soft)">1.72%</text>
+          <text x="670.0" y="192.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.06%</text>
+          <text x="712.8" y="168.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.51%</text>
+
+          <polyline points="60,74.6 179.8,129.5 663.4,184.9" fill="none" stroke="var(--proposed)" stroke-width="3.5" stroke-linejoin="round"/>
+          <circle cx="60" cy="74.6" r="4" fill="var(--proposed)"/><circle cx="179.8" cy="129.5" r="4" fill="var(--proposed)"/>
+          <g transform="translate(663.4,184.9)">
+            <rect x="-7" y="-7" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/>
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+          </g>
+          <text x="75" y="112" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-2.0%</text>
+          <text x="400" y="150" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-0.5%</text>
+          <text x="65" y="60" class="mono" font-size="10" font-weight="600" fill="var(--ink-soft)">ties existing exactly</text>
+
+          <g class="flag" transform="translate(444,172)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">2</text>
+            <g class="fl-note" transform="translate(-195,-46)"><rect width="215" height="34" rx="4"/>
+              <text x="10" y="14">orig 0.26%/-0.28% &lt; 0.5% min</text><text x="10" y="27">AC §5.9.1.1 — eliminated</text></g>
+          </g>
+          <g class="flag" transform="translate(683.4,175.0)">
+            <circle r="12" fill="var(--inlet-soft)" stroke="var(--inlet)"/><text x="0" y="4" text-anchor="middle" fill="var(--inlet)">i</text>
+            <g class="fl-note" transform="translate(-215,-58)"><rect width="230" height="34" rx="4"/>
+              <text x="10" y="14">Inlet ELV 61.702, STA 3+14.26 —</text><text x="10" y="27">verified full length, ties exactly</text></g>
+          </g>
+        </svg>
+      </div>
+
+      </div>
+      <div class="sidebar">
+        <div class="card"><h3>Before / after (fill check)</h3>
+        <div class="legend-row" style="justify-content:space-between;"><span>TL-5 peak fill</span><b class="mono" style="color:var(--proposed)">0.80→0.60 ft</b></div>
+        <div class="legend-row" style="justify-content:space-between;"><span>TL-6 peak fill</span><b class="mono" style="color:var(--proposed)">0.64 ft</b></div>
+        <div class="legend-row" style="justify-content:space-between;"><span>Start cut</span><b class="mono" style="color:var(--proposed)">none — ties original</b></div>
+      </div>
+<div class="card notes">
+        <h3>Revision notes</h3>
+        <ol>
+          <li><b>TL-5 — existing:</b> -3.53% and -2.36% exceed the 2.0% max; -0.48% and -0.01% fall below the 0.5% min.<span class="clause">AC §5.9.2.1 / §5.9.1.1</span></li>
+          <li><b>TL-5 — proposed:</b> 2 segments, -2.0% then -0.5%. Ties existing at STA 0+00 and the inlet (STA 3+13.74, ELV 60.682). Peak fill 0.60 ft.</li>
+          <li><b>TL-6 — existing:</b> 0.26% and -0.28% fall below the 0.5% min.<span class="clause">AC §5.9.1.1</span></li>
+          <li><b>TL-6 — proposed:</b> 2 segments, -2.0% to STA 0+62 then -0.5% to the inlet (STA 3+14.26, ELV 61.702). Ties existing at both ends. Peak fill 0.64 ft, deepest cut 0.17 ft.</li>
+          <li>Neither taxilane uses a start cut; inlet elevations unchanged.</li>
+        </ol>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-sec" id="CG404">
+    <div class="sheet-hdr">
+      <h2>CG404</h2>
+      <span class="sh-sub">Taxilane-7 · Taxilane-8</span>
+    </div>
+    <div class="layout">
+      <div class="charts">
+
+      <!-- TAXILANE-7 -->
+      <div class="panel">
+        <div class="panel-title">Taxilane-7 profile</div>
+        <div class="panel-sub">STA 0+00 TO STA 3+50 · V:1"=2' H:1"=20'</div>
+        <svg width="100%" viewBox="0 0 820 290" role="img">
+          <title>Taxilane-7 profile, existing vs proposed grade</title>
+          <line x1="60" y1="44" x2="60" y2="260" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="260" x2="780" y2="260" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="48" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">70</text>
+          <text x="34" y="84" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">69</text>
+          <text x="34" y="120" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">68</text>
+          <text x="34" y="156" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">67</text>
+          <text x="34" y="192" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">66</text>
+          <text x="34" y="228" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">65</text>
+          <text x="34" y="264" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">64</text>
+          <line x1="60" y1="80" x2="780" y2="80" stroke="var(--grid)"/>
+          <line x1="60" y1="116" x2="780" y2="116" stroke="var(--grid)"/>
+          <line x1="60" y1="152" x2="780" y2="152" stroke="var(--grid)"/>
+          <line x1="60" y1="188" x2="780" y2="188" stroke="var(--grid)"/>
+          <line x1="60" y1="224" x2="780" y2="224" stroke="var(--grid)"/>
+
+          <polyline points="60,114.6 111.4,144.8 162.9,175 214.3,188.7 265.7,190.2 317.1,191.6 368.6,200.2 420,197.7 471.4,188.7 522.9,180.8 574.3,185.1 625.7,190.9 677.1,195.9"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="84.7" y="120.1" class="mono" font-size="9.5" fill="var(--ink-soft)">-3.08%</text>
+          <text x="136.1" y="150.3" class="mono" font-size="9.5" fill="var(--ink-soft)">-4.36%</text>
+          <text x="187.6" y="172.6" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.51%</text>
+          <text x="224.6" y="180.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.65%</text>
+          <text x="265.7" y="181.2" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.04%</text>
+          <text x="317.1" y="182.6" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.29%</text>
+          <text x="352.0" y="215.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.29%</text>
+          <text x="393.3" y="222.0" class="mono" font-size="9.5" fill="var(--ink-soft)">0.54%</text>
+          <text x="430.0" y="215.0" class="mono" font-size="9.5" fill="var(--ink-soft)">0.77%</text>
+          <text x="481.7" y="178.1" class="mono" font-size="9.5" fill="var(--ink-soft)">1.01%</text>
+          <text x="574.3" y="176.1" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.55%</text>
+          <text x="646.3" y="183.9" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.25%</text>
+
+          <polyline points="60,114.6 276.2,190.2 387.6,200 555.6,185.3 677.1,195.9" fill="none" stroke="var(--proposed)" stroke-width="3.5" stroke-linejoin="round"/>
+          <circle cx="60" cy="114.6" r="4" fill="var(--proposed)"/><circle cx="276.2" cy="190.2" r="4" fill="var(--proposed)"/>
+          <circle cx="555.6" cy="185.3" r="4" fill="var(--proposed)"/><circle cx="677.1" cy="195.9" r="4" fill="var(--proposed)"/>
+          <g transform="translate(387.6,200)">
+            <rect x="-7" y="-7" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/>
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+          </g>
+          <text x="110" y="140" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-2.0%</text>
+          <text x="290" y="208" class="mono" font-size="10" font-weight="600" fill="var(--proposed)">-0.5%</text>
+          <text x="450" y="180" class="mono" font-size="10" font-weight="600" fill="var(--proposed)">+0.5%</text>
+          <text x="600" y="205" class="mono" font-size="10" font-weight="600" fill="var(--proposed)">-0.5%</text>
+          <text x="65" y="103" class="mono" font-size="10" font-weight="600" fill="var(--ink-soft)">ties existing exactly</text>
+
+          <g class="flag" transform="translate(136.1,161.0)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">1</text>
+            <g class="fl-note" transform="translate(-10,-46)"><rect width="205" height="34" rx="4"/>
+              <text x="10" y="14">-4.36% existing &gt; 2.0% max</text><text x="10" y="27">AC §5.9.2.1</text></g>
+          </g>
+          <g class="flag" transform="translate(407.6,190)">
+            <circle r="12" fill="var(--inlet-soft)" stroke="var(--inlet)"/><text x="0" y="4" text-anchor="middle" fill="var(--inlet)">i</text>
+            <g class="fl-note" transform="translate(-215,-58)"><rect width="230" height="34" rx="4"/>
+              <text x="10" y="14">Inlet ELV 65.667, STA 1+59.25</text><text x="10" y="27">unchanged, ties exactly</text></g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- TAXILANE-8 -->
+      <div class="panel">
+        <div class="panel-title">Taxilane-8 profile</div>
+        <div class="panel-sub">STA 0+00 TO STA 3+50 · V:1"=2' H:1"=20'</div>
+        <svg width="100%" viewBox="0 0 820 290" role="img">
+          <title>Taxilane-8 profile, existing vs proposed grade</title>
+          <line x1="60" y1="44" x2="60" y2="260" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="260" x2="780" y2="260" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="48" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">70</text>
+          <text x="34" y="84" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">69</text>
+          <text x="34" y="120" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">68</text>
+          <text x="34" y="156" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">67</text>
+          <text x="34" y="192" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">66</text>
+          <text x="34" y="228" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">65</text>
+          <text x="34" y="264" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">64</text>
+          <line x1="60" y1="80" x2="780" y2="80" stroke="var(--grid)"/>
+          <line x1="60" y1="116" x2="780" y2="116" stroke="var(--grid)"/>
+          <line x1="60" y1="152" x2="780" y2="152" stroke="var(--grid)"/>
+          <line x1="60" y1="188" x2="780" y2="188" stroke="var(--grid)"/>
+          <line x1="60" y1="224" x2="780" y2="224" stroke="var(--grid)"/>
+
+          <polyline points="60,96.2 111.4,114.9 162.9,136.9 214.3,160.6 265.7,164.2 317.1,159.2 368.6,160.3 420,170.7 471.4,174.3 522.9,165.7 574.3,161 625.7,154.5 677.1,152"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="101.1" y="102.2" class="mono" font-size="9.5" fill="var(--ink-soft)">-2.21%</text>
+          <text x="173.2" y="132.6" class="mono" font-size="9.5" fill="var(--ink-soft)">-2.67%</text>
+          <text x="255.4" y="154.5" class="mono" font-size="9.5" fill="var(--ink-soft)">1.75%</text>
+          <text x="327.4" y="150.4" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.00%</text>
+          <text x="400.0" y="152.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-1.62%</text>
+          <text x="440.0" y="192.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-0.31%</text>
+          <text x="490.0" y="188.0" class="mono" font-size="9.5" fill="var(--ink-soft)">1.66%</text>
+          <text x="584.6" y="150.7" class="mono" font-size="9.5" fill="var(--ink-soft)">0.54%</text>
+          <text x="655.0" y="140.0" class="mono" font-size="9.5" fill="var(--ink-soft)">-4.15%</text>
+
+          <polyline points="60,96.2 245.1,161 450.2,179 677.1,159.2" fill="none" stroke="var(--proposed)" stroke-width="3.5" stroke-linejoin="round"/>
+          <circle cx="60" cy="96.2" r="4" fill="var(--proposed)"/><circle cx="245.1" cy="161" r="4" fill="var(--proposed)"/>
+          <circle cx="677.1" cy="159.2" r="4" fill="var(--proposed)"/>
+          <g transform="translate(450.2,179)">
+            <rect x="-7" y="-7" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/>
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+          </g>
+          <text x="105" y="120" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-2.0%</text>
+          <text x="310" y="180" class="mono" font-size="10" font-weight="600" fill="var(--proposed)">-0.5%</text>
+          <text x="560" y="178" class="mono" font-size="10" font-weight="600" fill="var(--proposed)">+0.5%</text>
+          <text x="65" y="85" class="mono" font-size="10" font-weight="600" fill="var(--ink-soft)">ties existing exactly</text>
+
+          <g class="flag" transform="translate(173.2,143.6)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">2</text>
+            <g class="fl-note" transform="translate(-10,-46)"><rect width="205" height="34" rx="4"/>
+              <text x="10" y="14">-2.67% existing &gt; 2.0% max</text><text x="10" y="27">AC §5.9.2.1</text></g>
+          </g>
+          <g class="flag" transform="translate(470.2,169)">
+            <circle r="12" fill="var(--inlet-soft)" stroke="var(--inlet)"/><text x="0" y="4" text-anchor="middle" fill="var(--inlet)">i</text>
+            <g class="fl-note" transform="translate(-215,-58)"><rect width="230" height="34" rx="4"/>
+              <text x="10" y="14">Inlet ELV 66.251, STA 1+89.68</text><text x="10" y="27">unchanged, ties exactly</text></g>
+          </g>
+        </svg>
+      </div>
+
+      </div>
+      <div class="sidebar">
+        <div class="card notes">
+        <h3>Revision notes</h3>
+        <ol>
+          <li><b>TL-7 — existing:</b> -3.08%, -4.36% exceed the 2.0% max; -0.04%, -0.29% fall below the 0.5% min.<span class="clause">AC §5.9.2.1 / §5.9.1.1</span></li>
+          <li><b>TL-7 — proposed:</b> 4 segments, -2.0% / -0.5% / +0.5% / -0.5%. Ties existing at STA 0+00 and 3+00, inlet (STA 1+59.25, ELV 65.667) unchanged. Peak fill 0.68 ft, deepest cut 0.20 ft.</li>
+          <li><b>TL-8 — existing:</b> -2.21%, -2.67%, -4.15% exceed the 2.0% max; -0.00%, -0.31% fall below the 0.5% min.<span class="clause">AC §5.9.2.1 / §5.9.1.1</span></li>
+          <li><b>TL-8 — proposed:</b> 3 segments, -2.0% / -0.5% / +0.5%. Ties existing at STA 0+00, inlet (STA 1+89.68, ELV 66.251) unchanged. Peak fill 0.29 ft, deepest cut 0.32 ft.</li>
+          <li>No start cuts. All PVI grade changes ≤1.5%, within the 2.0% limit.<span class="clause">AC §5.9.1.3</span></li>
+        </ol>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-sec" id="CG405">
+    <div class="sheet-hdr">
+      <h2>CG405</h2>
+      <span class="sh-sub">Taxilane-9</span>
+    </div>
+    <div class="layout">
+      <div class="charts">
+
+      <div class="panel">
+        <div class="panel-title">Taxilane-9 profile</div>
+        <div class="panel-sub">STA 0+00 TO STA 3+50 · V:1"=2' H:1"=20'</div>
+        <svg width="100%" viewBox="0 0 820 280" role="img">
+          <title>Taxilane-9 profile, existing vs proposed grade</title>
+          <line x1="60" y1="44" x2="60" y2="242" stroke="var(--line)" stroke-width="1"/>
+          <line x1="60" y1="242" x2="780" y2="242" stroke="var(--line)" stroke-width="1"/>
+          <text x="34" y="70" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">70</text>
+          <text x="34" y="114" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">69</text>
+          <text x="34" y="158" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">68</text>
+          <text x="34" y="202" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">67</text>
+          <text x="34" y="246" text-anchor="end" class="mono" font-size="10" fill="var(--ink-soft)">66</text>
+          <line x1="60" y1="66" x2="780" y2="66" stroke="var(--grid)"/>
+          <line x1="60" y1="110" x2="780" y2="110" stroke="var(--grid)"/>
+          <line x1="60" y1="154" x2="780" y2="154" stroke="var(--grid)"/>
+          <line x1="60" y1="198" x2="780" y2="198" stroke="var(--grid)"/>
+
+          <polyline points="60,84.9 111.4,114.8 162.9,139.5 214.3,155.3 265.7,161.9 317.1,161.9 368.6,168.1 420,178.6 471.4,189.2 522.9,189.2 574.3,189.2 625.7,182.6 677.1,199.8"
+            fill="none" stroke="var(--existing)" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="84.7" y="90.3" class="mono" font-size="9" fill="var(--ink-soft)">-1.68%</text>
+          <text x="127.9" y="113.7" class="mono" font-size="9" fill="var(--ink-soft)">-3.49%</text>
+          <text x="152.0" y="126.0" class="mono" font-size="9" fill="var(--ink-soft)">-4.04%</text>
+          <text x="186.0" y="150.0" class="mono" font-size="9" fill="var(--ink-soft)">-2.87%</text>
+          <text x="215.0" y="140.0" class="mono" font-size="9" fill="var(--ink-soft)">-1.24%</text>
+          <text x="240.0" y="152.0" class="mono" font-size="9" fill="var(--ink-soft)">0.00%</text>
+          <text x="262.0" y="143.0" class="mono" font-size="9" fill="var(--ink-soft)">0.09%</text>
+          <text x="290.0" y="155.0" class="mono" font-size="9" fill="var(--ink-soft)">-1.16%</text>
+          <text x="327.4" y="150.0" class="mono" font-size="9" fill="var(--ink-soft)">0.58%</text>
+          <text x="389.2" y="163.3" class="mono" font-size="9" fill="var(--ink-soft)">-0.20%</text>
+          <text x="440.6" y="173.8" class="mono" font-size="9" fill="var(--ink-soft)">-0.72%</text>
+          <text x="502.3" y="180.2" class="mono" font-size="9" fill="var(--ink-soft)">-1.06%</text>
+          <text x="552.0" y="205.0" class="mono" font-size="9" fill="var(--ink-soft)">0.02%</text>
+          <text x="596.0" y="177.0" class="mono" font-size="9" fill="var(--ink-soft)">0.52%</text>
+          <text x="622.0" y="205.0" class="mono" font-size="9" fill="var(--ink-soft)">0.07%</text>
+          <text x="648.0" y="176.0" class="mono" font-size="9" fill="var(--ink-soft)">-3.97%</text>
+          <text x="668.0" y="216.0" class="mono" font-size="9" fill="var(--ink-soft)">-6.36%</text>
+
+          <polyline points="60,84.9 248.6,165.6 677.1,211.4" fill="none" stroke="var(--proposed)" stroke-width="3.5" stroke-linejoin="round"/>
+          <circle cx="60" cy="84.9" r="4" fill="var(--proposed)"/><circle cx="248.6" cy="165.6" r="4" fill="var(--proposed)"/>
+          <circle cx="677.1" cy="211.4" r="4" fill="var(--proposed)"/>
+          <g transform="translate(461.4,188.4)">
+            <rect x="-7" y="-7" width="14" height="14" fill="var(--inlet-soft)" stroke="var(--inlet)" stroke-width="2"/>
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="-7" y1="0" x2="7" y2="0" stroke="var(--inlet)" stroke-width="1.3"/>
+            <line x1="0" y1="-7" x2="0" y2="7" stroke="var(--inlet)" stroke-width="1.3"/>
+          </g>
+          <text x="105" y="112" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-2.0%</text>
+          <text x="330" y="200" class="mono" font-size="11" font-weight="600" fill="var(--proposed)">-0.5%</text>
+          <text x="65" y="74" class="mono" font-size="10" font-weight="600" fill="var(--ink-soft)">ties existing exactly</text>
+
+          <g class="flag" transform="translate(152.0,139.0)">
+            <circle r="12"/><text x="0" y="4" text-anchor="middle">1</text>
+            <g class="fl-note" transform="translate(-10,-46)"><rect width="215" height="34" rx="4"/>
+              <text x="10" y="14">-4.04% existing &gt; 2.0% max</text><text x="10" y="27">AC §5.9.2.1 — worst in set</text></g>
+          </g>
+          <g class="flag" transform="translate(481.4,178.4)">
+            <circle r="12" fill="var(--inlet-soft)" stroke="var(--inlet)"/><text x="0" y="4" text-anchor="middle" fill="var(--inlet)">i</text>
+            <g class="fl-note" transform="translate(-215,-58)"><rect width="230" height="34" rx="4"/>
+              <text x="10" y="14">Inlet ELV 67.219, STA 1+95.12</text><text x="10" y="27">unchanged, ties within 0.001 ft</text></g>
+          </g>
+        </svg>
+      </div>
+
+      </div>
+      <div class="sidebar">
+        <div class="card"><h3>Before / after</h3>
+        <div class="stat"><span>Grade breaks</span><b>16 → 1</b></div>
+        <div class="stat"><span>Worst single grade</span><b>-6.36% → -2.00%</b></div>
+        <div class="stat"><span>Segments outside limits</span><b>10 → 0</b></div>
+        <div class="stat"><span>Peak fill / cut</span><b>0.24 / 0.53 ft</b></div>
+        <div class="stat"><span>Inlet elevation</span><b>unchanged</b></div>
+      </div>
+<div class="card notes">
+        <h3>Revision notes</h3>
+        <ol>
+          <li><b>TL-9 — existing:</b> -3.49%, -4.04%, -2.87%, -3.97% and -6.36% exceed the 2.0% max; 0.00%, 0.09%, -0.20%, 0.02%, 0.07% fall below the 0.5% min. 16 grade breaks over 300 ft — the most in the set.<span class="clause">AC §5.9.2.1 / §5.9.1.1</span></li>
+          <li><b>TL-9 — proposed:</b> 2 segments, -2.0% to STA 0+92 then -0.5% to the end. Ties existing at STA 0+00; inlet (STA 1+95.12, ELV 67.219) unchanged, met within 0.001 ft. Peak fill 0.24 ft, deepest cut 0.53 ft. Single PVI, change 1.50%.<span class="clause">AC §5.9.1.3</span></li>
+        </ol>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ref" style="margin-top:10px;">
+    <b>Reference</b> — FAA AC 150/5300-13B, Airport Design, Chg 1 · §5.9 Apron Surface Gradients (pp. 5-9 to 5-11)<br>
+    Limits applied: min gradient 0.5% (§5.9.1.1) · max gradient 2.0% (§5.9.2.1) · max grade change 2.0% (§5.9.1.3)
+  </div>
+
+  <footer>
+    <span>DY Consultants · Rehabilitation of Taxilanes · Old Bridge Airport, Middlesex County, NJ</span>
+    <span>Compliance review overlay — sheets CG401–CG405, DY Project No. 656.05</span>
+  </footer>
+
+</div>
+</body>
+</html>
