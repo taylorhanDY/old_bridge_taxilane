@@ -1,1 +1,1 @@
-https://github.com/taylorhanDY/old_bridge_taxilane/blob/main/index.html
+https://taylorhandy.github.io/old_bridge_taxilane/
